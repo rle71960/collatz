@@ -1,15 +1,15 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 int main()
 {
 	pid_t pid;
 
-	int num = 1;
+	int num = getUserInput(&num);
 
 	while(num > 0) {
-		num = getUserInput(&num);
 		pid = fork();
 
 		if (pid < 0) {
@@ -17,27 +17,32 @@ int main()
 			return 1;
 		}
 		else if (pid == 0) {
-			//do stuff
 			int col = num;
-			printf("The value of col is '%d'\n", col);
 			while(col > 1) {
 				printf(" %d, ", col);
 				col = collatz(col);
 			}
 			printf(" %d\n", col);
+			return 0;
 		}
 		else {
 			wait(pid);
+			num = getUserInput(&num);
 		}
+
 	}
 }
 
 int getUserInput(int *in) {
-	// doesn't handle char
 	printf("What is your number? ");
-	scanf("%d", &in);
-	printf("\n");
-	return (int) in;
+	int read = scanf("%d", &in);
+	// read != 1 when char is entered
+	if (read == 1)
+	{
+		printf("\n");
+		return (int) in;
+	}
+	exit(0);
 }
 
 int collatz(int in) {
