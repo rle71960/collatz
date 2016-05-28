@@ -6,11 +6,11 @@ int main()
 {
 	pid_t pid;
 
-	int num;
+	int num = 1;
 
-	pid = fork();
-	while(getUserInput(&num) > 0) {
-		//pid = fork();
+	while(num > 0) {
+		num = getUserInput(&num);
+		pid = fork();
 
 		if (pid < 0) {
 			fprintf(stderr, "Fork Failed");
@@ -18,11 +18,13 @@ int main()
 		}
 		else if (pid == 0) {
 			//do stuff
-			while(num > 1) {
-				printf(" %d, ", num);
-				num = collatz(&num);
+			int col = num;
+			printf("The value of col is '%d'\n", col);
+			while(col > 1) {
+				printf(" %d, ", col);
+				col = collatz(col);
 			}
-			printf(" %d", num);
+			printf(" %d\n", col);
 		}
 		else {
 			wait(pid);
@@ -38,7 +40,7 @@ int getUserInput(int *in) {
 	return (int) in;
 }
 
-int collatz(int *in) {
+int collatz(int in) {
 	int num = (int) in;
 	if ( num % 2 == 0 ) {
 		num = num / 2;
