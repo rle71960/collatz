@@ -3,11 +3,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+long getUserInput(long in);
+long collatz(long in);
+
 int main()
 {
 	pid_t pid;
 
-	int num = getUserInput(&num);
+	long num = getUserInput(num);
 
 	while(num > 0) {
 		pid = fork();
@@ -17,41 +20,41 @@ int main()
 			return 1;
 		}
 		else if (pid == 0) {
-			int col = num;
+			long col = num;
 			while(col > 1) {
-				printf(" %d, ", col);
+				printf(" %ld, ", col);
 				col = collatz(col);
 			}
-			printf(" %d\n", col);
+			printf(" %ld\n", col);
 			return 0;
 		}
 		else {
 			wait(pid);
-			num = getUserInput(&num);
+			num = getUserInput(num);
 		}
 
 	}
 }
 
-int getUserInput(int *in) {
+long getUserInput(long in) {
 	printf("What is your number? ");
 	int read = scanf("%d", &in);
 	// read != 1 when char is entered
 	if (read == 1)
 	{
 		printf("\n");
-		return (int) in;
+		return (long) in;
 	}
 	exit(0);
 }
 
-int collatz(int in) {
-	int num = (int) in;
+long collatz(long in) {
+	long num = in;
 	if ( num % 2 == 0 ) {
 		num = num / 2;
 	}
 	else {
 		num = num * 3 + 1;
 	}
-	return (int) num;
+	return num;
 }
